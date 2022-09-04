@@ -10,10 +10,8 @@ import os
 STOCK = "LULU"
 COMPANY_NAME = "LULULEMON"
 STOCK_API_ENDPOINT = "https://www.alphavantage.co/query"
-# STOCK_API_KEY = "71URQGF12S1WQ7L7"
 STOCK_API_KEY = os.environ.get('STOCK_API_KEY')
 NEWS_API_ENDPOINT = "https://newsapi.org/v2/everything"
-# NEWS_API_KEY = "beedff171ef247318131a992a2afc418"
 NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
 
 def checkstock():
