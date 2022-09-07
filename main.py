@@ -8,8 +8,8 @@ from twilio.rest import Client
 # - Send SMS notifications via API through twilio
 
 # CONSTANTS - Secrets are passed in from environment variables set in venv activate.ps1
-STOCK = "AMZN"
-COMPANY_NAME = "AMAZON"
+STOCK = "LULU"
+COMPANY_NAME = "LULULEMON"
 STOCK_API_ENDPOINT = "https://www.alphavantage.co/query"
 STOCK_API_KEY = os.environ.get('STOCK_API_KEY')
 NEWS_API_ENDPOINT = "https://newsapi.org/v2/everything"
@@ -53,14 +53,19 @@ def highstockmovement(stockdata):
 
 def getnews():
     updatenews = ""
+    news_head = {
+        "Authorization": NEWS_API_KEY,
+    }
     news_params = {
         "q": COMPANY_NAME,
         "language": "en",
         "pagesize": 3,
-        "apiKey": NEWS_API_KEY,
     }
-    news_response = requests.get(url=NEWS_API_ENDPOINT, params=news_params)
+    news_response = requests.get(url=NEWS_API_ENDPOINT, params=news_params, headers=news_head)
     news_response.raise_for_status
+    print(news_response.status_code)
+    news_data = news_response.json()
+    print(news_data)
     news_data = news_response.json()['articles']
     for each in news_data:
         updatenews = updatenews + f"- {each['title']}\n"
@@ -81,7 +86,10 @@ def sendSMS(parm_message):
 dataset = checkstock()
 if highstockmovement(dataset):
     latest_news = getnews()
-    sms_message = f"{direction_arrow} {percentage_diff}\n{latest_news}"
-    sendSMS(sms_message)
+    if latest_news != "":
+        sms_message = f"{direction_arrow} {percentage_diff}\n{latest_news}"
+        sendSMS(sms_message)
+    else:
+        print('No News Found')
 else:
     print('No Activity')
